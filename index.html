@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Grade Average Estimator</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      margin: 0;
+      padding: 2rem;
+      background: #f9fafa;
+      color: #333;
+      max-width: 800px;
+      margin: auto;
+    }
+
+    h1 {
+      text-align: center;
+      color: #2c3e50;
+    }
+
+    .grade-info {
+      background: #ecf0f1;
+      padding: 1rem;
+      border-radius: 10px;
+      margin-bottom: 2rem;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 1rem;
+    }
+
+    th, td {
+      padding: 8px 10px;
+      text-align: center;
+    }
+
+    th {
+      background-color: #34495e;
+      color: white;
+    }
+
+    tr:nth-child(even) {
+      background-color: #f2f2f2;
+    }
+
+    .grade-inputs {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+      gap: 1rem;
+      margin-bottom: 2rem;
+    }
+
+    .grade-box {
+      text-align: center;
+    }
+
+    .grade-box input {
+      width: 50px;
+      padding: 6px;
+      font-size: 16px;
+      text-align: center;
+    }
+
+    button {
+      padding: 12px 20px;
+      background-color: #2ecc71;
+      color: white;
+      font-size: 16px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      display: block;
+      margin: auto;
+    }
+
+    button:hover {
+      background-color: #27ae60;
+    }
+
+    #result {
+      margin-top: 2rem;
+      background: #e8f6ec;
+      padding: 1.5rem;
+      border-radius: 10px;
+      font-size: 18px;
+      line-height: 1.6;
+    }
+
+    .range {
+      font-weight: bold;
+      color: #2c3e50;
+    }
+
+  </style>
+</head>
+<body>
+
+  <h1>Grade Average Estimator</h1>
+
+  <div class="grade-info">
+    <h3>Grade to Percentage Mapping</h3>
+    <table>
+      <thead>
+        <tr>
+          <th>Grade</th>
+          <th>Percentage Range</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td>A+</td><td>90 – 100</td></tr>
+        <tr><td>A</td><td>80 – 89</td></tr>
+        <tr><td>B+</td><td>70 – 79</td></tr>
+        <tr><td>B</td><td>60 – 69</td></tr>
+        <tr><td>C+</td><td>50 – 59</td></tr>
+        <tr><td>C</td><td>40 – 49</td></tr>
+        <tr><td>D+</td><td>30 – 39</td></tr>
+        <tr><td>D</td><td>20 – 29</td></tr>
+        <tr><td>E</td><td>Below 20</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="grade-inputs">
+    <div class="grade-box"><label>A+<br><input type="number" min="0" id="A+" value="0"></label></div>
+    <div class="grade-box"><label>A<br><input type="number" min="0" id="A" value="0"></label></div>
+    <div class="grade-box"><label>B+<br><input type="number" min="0" id="B+" value="0"></label></div>
+    <div class="grade-box"><label>B<br><input type="number" min="0" id="B" value="0"></label></div>
+    <div class="grade-box"><label>C+<br><input type="number" min="0" id="C+" value="0"></label></div>
+    <div class="grade-box"><label>C<br><input type="number" min="0" id="C" value="0"></label></div>
+    <div class="grade-box"><label>D+<br><input type="number" min="0" id="D+" value="0"></label></div>
+    <div class="grade-box"><label>D<br><input type="number" min="0" id="D" value="0"></label></div>
+    <div class="grade-box"><label>E<br><input type="number" min="0" id="E" value="0"></label></div>
+  </div>
+
+  <button onclick="calculate()">Estimate Average</button>
+
+  <div id="result"></div>
+
+  <script>
+    const gradeRanges = {
+      "A+": [90, 100],
+      "A": [80, 89],
+      "B+": [70, 79],
+      "B": [60, 69],
+      "C+": [50, 59],
+      "C": [40, 49],
+      "D+": [30, 39],
+      "D": [20, 29],
+      "E": [0, 19]
+    };
+
+    const estimatedMid = {
+      "A+": 95,
+      "A": 85,
+      "B+": 75,
+      "B": 65,
+      "C+": 55,
+      "C": 45,
+      "D+": 35,
+      "D": 25,
+      "E": 15
+    };
+
+    function calculate() {
+      let totalMin = 0;
+      let totalMax = 0;
+      let totalMid = 0;
+      let totalCount = 0;
+
+      for (let grade in gradeRanges) {
+        let count = parseInt(document.getElementById(grade).value) || 0;
+        const [min, max] = gradeRanges[grade];
+
+        totalMin += count * min;
+        totalMax += count * max;
+        totalMid += count * estimatedMid[grade];
+        totalCount += count;
+      }
+
+      if (totalCount === 0) {
+        document.getElementById("result").innerHTML = `<p>Please enter at least one grade count.</p>`;
+        return;
+      }
+
+      const minAvg = (totalMin / totalCount).toFixed(2);
+      const maxAvg = (totalMax / totalCount).toFixed(2);
+      const estAvg = (totalMid / totalCount).toFixed(2);
+
+      document.getElementById("result").innerHTML = `
+        <p><strong>Estimated Grade Range:</strong> <span class="range">${minAvg}% – ${maxAvg}%</span></p>
+        <p><strong>Likely Average:</strong> <span class="range">${estAvg}%</span></p>
+        <p>This average is based on assigning midpoint values to each grade range for a fair estimate.
+        For example, A+ is treated as 95%, A as 85%, B+ as 75%, and so on.</p>
+      `;
+    }
+  </script>
+
+</body>
+</html>
