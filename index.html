@@ -1,92 +1,118 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Grade Average Estimator</title>
   <style>
     body {
       font-family: 'Segoe UI', sans-serif;
+      background: #f4f7fa;
+      color: #333;
       margin: 0;
       padding: 2rem;
-      background: #f9fafa;
-      color: #333;
-      max-width: 800px;
-      margin: auto;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
     }
 
     h1 {
       text-align: center;
       color: #2c3e50;
-    }
-
-    .grade-info {
-      background: #ecf0f1;
-      padding: 1rem;
-      border-radius: 10px;
       margin-bottom: 2rem;
     }
 
-    table {
+    .container {
+      display: flex;
+      flex-direction: row;
+      gap: 2rem;
       width: 100%;
-      border-collapse: collapse;
+      max-width: 900px;
+    }
+
+    .inputs-panel {
+      background: #fff;
+      border-radius: 12px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+      padding: 1.5rem;
+      flex: 1;
+    }
+
+    .inputs-panel h2 {
+      margin-top: 0;
+      font-size: 1.2rem;
+      color: #34495e;
+      margin-bottom: 1rem;
+      border-bottom: 1px solid #eee;
+      padding-bottom: 0.5rem;
+    }
+
+    .grade-input {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
       margin-bottom: 1rem;
     }
 
-    th, td {
-      padding: 8px 10px;
-      text-align: center;
+    .grade-input label {
+      font-weight: 600;
+      flex: 1;
     }
 
-    th {
-      background-color: #34495e;
-      color: white;
-    }
-
-    tr:nth-child(even) {
-      background-color: #f2f2f2;
-    }
-
-    .grade-inputs {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
-      gap: 1rem;
-      margin-bottom: 2rem;
-    }
-
-    .grade-box {
-      text-align: center;
-    }
-
-    .grade-box input {
-      width: 50px;
+    .grade-input input {
+      width: 60px;
       padding: 6px;
       font-size: 16px;
       text-align: center;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      flex-shrink: 0;
+    }
+
+    .actions {
+      display: flex;
+      gap: 1rem;
+      justify-content: center;
+      margin-top: 1.5rem;
     }
 
     button {
-      padding: 12px 20px;
-      background-color: #2ecc71;
-      color: white;
-      font-size: 16px;
+      padding: 10px 16px;
       border: none;
-      border-radius: 5px;
+      border-radius: 6px;
+      font-size: 15px;
       cursor: pointer;
-      display: block;
-      margin: auto;
+      transition: 0.3s ease;
     }
 
-    button:hover {
+    #estimateBtn {
+      background-color: #2ecc71;
+      color: white;
+    }
+
+    #estimateBtn:hover {
       background-color: #27ae60;
     }
 
-    #result {
-      margin-top: 2rem;
-      background: #e8f6ec;
+    #shareBtn {
+      background-color: #3498db;
+      color: white;
+    }
+
+    #shareBtn:hover {
+      background-color: #2980b9;
+    }
+
+    .output-panel {
+      flex: 2;
+      background: #b9d8c7;
+      border-radius: 12px;
       padding: 1.5rem;
-      border-radius: 10px;
-      font-size: 18px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.06);
+    }
+
+    #result {
+      font-size: 16px;
       line-height: 1.6;
     }
 
@@ -95,50 +121,106 @@
       color: #2c3e50;
     }
 
+    .grade-info {
+      margin-top: 3rem;
+      background: #f1f2f6;
+      padding: 1.5rem;
+      border-radius: 10px;
+      width: 100%;
+      max-width: 900px;
+    }
+
+    .grade-info h3 {
+      margin-top: 0;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 1rem;
+    }
+
+    th, td {
+      padding: 8px;
+      text-align: center;
+    }
+
+    th {
+      background: #2c3e50;
+      color: white;
+    }
+
+    tr:nth-child(even) {
+      background: #ecf0f1;
+    }
+
+    @media (max-width: 700px) {
+      .container {
+        flex-direction: column;
+      }
+
+      .actions {
+        flex-direction: column;
+        align-items: center;
+      }
+
+      .grade-input {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+
+      .grade-input input {
+        width: 100%;
+      }
+    }
   </style>
 </head>
 <body>
 
   <h1>Grade Average Estimator</h1>
 
-  <div class="grade-info">
-    <h3>Grade to Percentage Mapping</h3>
-    <table>
-      <thead>
-        <tr>
-          <th>Grade</th>
-          <th>Percentage Range</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr><td>A+</td><td>90 – 100</td></tr>
-        <tr><td>A</td><td>80 – 89</td></tr>
-        <tr><td>B+</td><td>70 – 79</td></tr>
-        <tr><td>B</td><td>60 – 69</td></tr>
-        <tr><td>C+</td><td>50 – 59</td></tr>
-        <tr><td>C</td><td>40 – 49</td></tr>
-        <tr><td>D+</td><td>30 – 39</td></tr>
-        <tr><td>D</td><td>20 – 29</td></tr>
-        <tr><td>E</td><td>Below 20</td></tr>
-      </tbody>
-    </table>
+  <div class="container">
+    <div class="inputs-panel">
+      <h2>Enter Number of Each Grade</h2>
+      <div class="grade-input"><label for="A+">A+</label><input type="number" id="A+" value="0" min="0"></div>
+      <div class="grade-input"><label for="A">A</label><input type="number" id="A" value="0" min="0"></div>
+      <div class="grade-input"><label for="B+">B+</label><input type="number" id="B+" value="0" min="0"></div>
+      <div class="grade-input"><label for="B">B</label><input type="number" id="B" value="0" min="0"></div>
+      <div class="grade-input"><label for="C+">C+</label><input type="number" id="C+" value="0" min="0"></div>
+      <div class="grade-input"><label for="C">C</label><input type="number" id="C" value="0" min="0"></div>
+      <div class="grade-input"><label for="D+">D+</label><input type="number" id="D+" value="0" min="0"></div>
+      <div class="grade-input"><label for="D">D</label><input type="number" id="D" value="0" min="0"></div>
+      <div class="grade-input"><label for="E">E</label><input type="number" id="E" value="0" min="0"></div>
+
+      <div class="actions">
+        <button id="estimateBtn" onclick="calculate()">Estimate</button>
+        <button id="shareBtn" onclick="copyResult()">Copy Result</button>
+      </div>
+    </div>
+
+    <div class="output-panel">
+      <div id="result">Enter grades and click "Estimate" to see the average.</div>
+      <div class="grade-info">
+        <h3>Grade to Percentage Mapping</h3>
+        <table>
+        <thead>
+            <tr><th>Grade</th><th>Percentage Range</th></tr>
+        </thead>
+        <tbody>
+            <tr><td>A+</td><td>90 – 100</td></tr>
+            <tr><td>A</td><td>80 – 89</td></tr>
+            <tr><td>B+</td><td>70 – 79</td></tr>
+            <tr><td>B</td><td>60 – 69</td></tr>
+            <tr><td>C+</td><td>50 – 59</td></tr>
+            <tr><td>C</td><td>40 – 49</td></tr>
+            <tr><td>D+</td><td>30 – 39</td></tr>
+            <tr><td>D</td><td>20 – 29</td></tr>
+            <tr><td>E</td><td>Below 20</td></tr>
+        </tbody>
+        </table>
+    </div>
+    </div>
   </div>
-
-  <div class="grade-inputs">
-    <div class="grade-box"><label>A+<br><input type="number" min="0" id="A+" value="0"></label></div>
-    <div class="grade-box"><label>A<br><input type="number" min="0" id="A" value="0"></label></div>
-    <div class="grade-box"><label>B+<br><input type="number" min="0" id="B+" value="0"></label></div>
-    <div class="grade-box"><label>B<br><input type="number" min="0" id="B" value="0"></label></div>
-    <div class="grade-box"><label>C+<br><input type="number" min="0" id="C+" value="0"></label></div>
-    <div class="grade-box"><label>C<br><input type="number" min="0" id="C" value="0"></label></div>
-    <div class="grade-box"><label>D+<br><input type="number" min="0" id="D+" value="0"></label></div>
-    <div class="grade-box"><label>D<br><input type="number" min="0" id="D" value="0"></label></div>
-    <div class="grade-box"><label>E<br><input type="number" min="0" id="E" value="0"></label></div>
-  </div>
-
-  <button onclick="calculate()">Estimate Average</button>
-
-  <div id="result"></div>
 
   <script>
     const gradeRanges = {
@@ -166,15 +248,11 @@
     };
 
     function calculate() {
-      let totalMin = 0;
-      let totalMax = 0;
-      let totalMid = 0;
-      let totalCount = 0;
+      let totalMin = 0, totalMax = 0, totalMid = 0, totalCount = 0;
 
       for (let grade in gradeRanges) {
         let count = parseInt(document.getElementById(grade).value) || 0;
         const [min, max] = gradeRanges[grade];
-
         totalMin += count * min;
         totalMax += count * max;
         totalMid += count * estimatedMid[grade];
@@ -182,7 +260,7 @@
       }
 
       if (totalCount === 0) {
-        document.getElementById("result").innerHTML = `<p>Please enter at least one grade count.</p>`;
+        document.getElementById("result").innerHTML = `<p>Please enter at least one grade.</p>`;
         return;
       }
 
@@ -190,12 +268,30 @@
       const maxAvg = (totalMax / totalCount).toFixed(2);
       const estAvg = (totalMid / totalCount).toFixed(2);
 
+      const text = `
+Estimated Grade Range: ${minAvg}% – ${maxAvg}%
+Likely Average: ${estAvg}%
+(Based on midpoint estimates: A+ as 95%, A as 85%, etc.)
+      `.trim();
+
       document.getElementById("result").innerHTML = `
         <p><strong>Estimated Grade Range:</strong> <span class="range">${minAvg}% – ${maxAvg}%</span></p>
         <p><strong>Likely Average:</strong> <span class="range">${estAvg}%</span></p>
-        <p>This average is based on assigning midpoint values to each grade range for a fair estimate.
-        For example, A+ is treated as 95%, A as 85%, B+ as 75%, and so on.</p>
+        <p>This is calculated using the midpoint of each grade's percentage range (e.g., A+ = 95%).</p>
       `;
+      document.getElementById("result").dataset.copyText = text;
+    }
+
+    function copyResult() {
+      const resultText = document.getElementById("result").dataset.copyText;
+      if (!resultText) {
+        alert("Please calculate first.");
+        return;
+      }
+
+      navigator.clipboard.writeText(resultText)
+        .then(() => alert("Result copied to clipboard!"))
+        .catch(() => alert("Failed to copy result."));
     }
   </script>
 
