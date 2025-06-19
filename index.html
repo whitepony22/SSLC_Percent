@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Grade Average Estimator</title>
+  <title>SSLC Percentage Claculator</title>
   <style>
     body {
       font-family: 'Segoe UI', sans-serif;
@@ -27,7 +27,7 @@
       flex-direction: row;
       gap: 2rem;
       width: 100%;
-      max-width: 900px;
+      max-width: 1000px;
     }
 
     .inputs-panel {
@@ -126,8 +126,8 @@
       background: #f1f2f6;
       padding: 1.5rem;
       border-radius: 10px;
-      width: 100%;
-      max-width: 900px;
+      width: 90%;
+      max-width: 800px;
     }
 
     .grade-info h3 {
@@ -177,7 +177,7 @@
 </head>
 <body>
 
-  <h1>Grade Average Estimator</h1>
+  <h1>SSLC Percentage Calculator</h1>
 
   <div class="container">
     <div class="inputs-panel">
@@ -264,14 +264,21 @@
         return;
       }
 
+      if (totalCount !== 10) {
+        document.getElementById("result").innerHTML = `
+          <p style="color:maroon;"><strong>Oops!</strong> You must enter exactly <strong>10 total grades</strong>.</p>
+        `;
+        return;
+      }
+
       const minAvg = (totalMin / totalCount).toFixed(2);
       const maxAvg = (totalMax / totalCount).toFixed(2);
       const estAvg = (totalMid / totalCount).toFixed(2);
 
       const text = `
-Estimated Grade Range: ${minAvg}% – ${maxAvg}%
-Likely Average: ${estAvg}%
-(Based on midpoint estimates: A+ as 95%, A as 85%, etc.)
+    Estimated Grade Range: ${minAvg}% – ${maxAvg}%
+    Likely Average: ${estAvg}%
+    (Based on midpoint estimates: A+ as 95%, A as 85%, etc.)
       `.trim();
 
       document.getElementById("result").innerHTML = `
@@ -280,6 +287,13 @@ Likely Average: ${estAvg}%
         <p>This is calculated using the midpoint of each grade's percentage range (e.g., A+ = 95%).</p>
       `;
       document.getElementById("result").dataset.copyText = text;
+
+      // 🎉 Confetti Animation
+      confetti({
+        particleCount: 120,
+        spread: 100,
+        origin: { y: 0.6 }
+      });
     }
 
     function copyResult() {
@@ -294,6 +308,6 @@ Likely Average: ${estAvg}%
         .catch(() => alert("Failed to copy result."));
     }
   </script>
-
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
 </body>
 </html>
